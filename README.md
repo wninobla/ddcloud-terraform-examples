@@ -15,10 +15,10 @@ The files included in this bundle are meant to build upon each other culminating
 
 To get started using the files, you will require the following:
 
-1)  Valid Dimension Data cloud account
-2)  Terraform binaries from where you expect to execute scripts from (https://www.terraform.io/downloads.html)
-3)  Dimension Data Terraform plugin (https://github.com/DimensionDataResearch/dd-cloud-compute-terraform)
-4)  Some spare time to read the example files...
+1.  Valid Dimension Data cloud account
+2.  Terraform binaries from where you expect to execute scripts from (https://www.terraform.io/downloads.html)
+3.  Dimension Data Terraform plugin (https://github.com/DimensionDataResearch/dd-cloud-compute-terraform)
+4.  Some spare time to read the example files...
 
 When running Terraform, its important to note that its meant to spin up ENTIRE infrastructures in a single shot.  Any modifications whether adding, modifying a configuration or detroying parts of or an entire infrastructure are done AFTER an initial rollout is performed.  For more information on how to utilize Terraform, please visit their website documentation at:
 
