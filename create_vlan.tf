@@ -5,8 +5,6 @@
  * 
  */
 
-#  Copy and paste the section below into the create_networkdomain.tf file created previously 
- 
 #  "Resource" section for "ddcloud_vlan" which defines how Terraform builds infrastructure assets.
 #  This resource creates network VLANs.
 
