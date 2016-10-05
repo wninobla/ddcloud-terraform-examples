@@ -60,4 +60,4 @@ resource "ddcloud_networkdomain" "networkdomain" {
 #  3.  The Network Domain Type specifies whether it allows load balancing and server anti-affinity
 #      or not.  The plan for ADVANCED allows these features and will be the basis for the next set
 #      of configuration files.
-#
+#  4.  For more information on resource usage, please go to the URL - https://goo.gl/lrtt3M
