@@ -10,7 +10,8 @@ The files included in this bundle are meant to build upon each other culminating
 - server.tf
 - nat.tf
 - vip.tf
-- firewall_acl.tf
+- firewall_rules.tf
+- server_anti_affinity.tf
 - infrastructure.tf
 
 To get started using the files, you will require the following:
