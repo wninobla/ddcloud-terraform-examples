@@ -1,4 +1,4 @@
-/*
+e/*
  * In building any cloud based infrastructure, the same guidelines usually apply in that:
  * 
  *   1.  You need to have access to a cloud provider via some username/password combination AND
@@ -37,8 +37,8 @@ provider "ddcloud" {
 #  assets.  In this case, this resource creates network domains.
 
 resource "ddcloud_networkdomain" "networkdomain" {
-  name                 = "ENTER NAME HERE"
-  description          = "ENTER DESCRIPTION HERE"
+  name                 = "Test Network Domain"
+  description          = "New network domain created via Terraform"
   datacenter           = "NA12"
   plan                 = "ADVANCED"
 }
@@ -52,8 +52,8 @@ resource "ddcloud_networkdomain" "networkdomain" {
 #
 #      + ddcloud_networkdomain.networkdomain
 #          datacenter:       "NA12"
-#          description:      "ENTER DESCRIPTION HERE"
-#          name:             "ENTER NAME HERE"
+#          description:      "New network domain created via Terraform"
+#          name:             "Test Network Domain"
 #          nat_ipv4_address: "<computed>"
 #          plan:             "ADVANCED"
 #
