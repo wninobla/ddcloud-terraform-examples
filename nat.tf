@@ -1,5 +1,5 @@
 /*
- * The section below build on the configuration files in vlan.tf and includes resource
+ * The section below build on the configuration files in create_networkdomain and includes resource
  * definitions to create NAT rules against existing VM's via Terraform.  The information below is 
  * meant to be added to the existing file but is separated for learning purposes.
  * 
@@ -18,8 +18,8 @@ resource "ddcloud_nat" "nat" {
 #  "Resource" Section Notes:
 #  
 #  1.  The private_ipv4 field uses a variable to call the current value of the resource previously
-#      created in the server.tf file.  Please note that since (2) servers were created, the syntax
-#      references an explicit resource name (i.e. ddcloud_server.webapp-server)
+#      created in the create_server.tf file.  Please note that since (2) servers were created, the
+#      syntax references an explicit resource name (i.e. ddcloud_server.webapp-server)
 #  2.  The depends_on field sets a dependency on the network VLAN being created BEFORE executing
 #      the resources defined here for NAT rule creation.
 #  3.  If nothing is changes, the resource definition will create a NAT rule one in the DMZ network
