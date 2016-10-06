@@ -1,5 +1,5 @@
 /*
- * The section below build on the configuration files in create_networkdomain and includes resource
+ * The section below build on the configuration files in vlan.tf and includes resource
  * definitions to create VM's via Terraform.  The information below is meant to be added to the
  * existing file but is separated for learning purposes.
  * 
@@ -56,7 +56,7 @@ resource "ddcloud_server" "db-server" {
 #  2.  The os_image_name field references the common name of the VM template in the cloud available
 #      in the data center location the code is executing against for a VM to be instantiated from.
 #  3.  The primary_adapter_ipv4 field is specified based on the VLAN network range created in the 
-#      create_vlan.tf example
+#      vlan.tf example
 #  4.  The depends_on field sets a dependency on the network VLAN being crated BEFORE executing
 #      the resources defined here for VM creation.
 #  5.  If nothing is changes, the resource definition will create (2) VM's one in each network VLAN
