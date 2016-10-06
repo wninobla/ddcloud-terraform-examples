@@ -39,3 +39,11 @@ For more information on how to utilize Terraform, please visit their website doc
 
 https://www.terraform.io/docs/index.html
 
+
+## Advanced Configuration using Terraform COUNT and Variables
+
+For advanced end users, one additional file has been added and detailed below:
+
+- infrastructure_with_variables.tf
+
+This version of the file takes the initial examples and creates a real world application of using Terraform HCL language and applying it to an environment where there are multiple resource assets to be created.  The idea around the COUNT function is one where an end user can iterate through a list and spin up multiple resources that are uniquely identified but requires only (1) resource configuration.
