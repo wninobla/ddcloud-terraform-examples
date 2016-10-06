@@ -5,13 +5,13 @@ This repository holds several individual examples of how to utilize Terraform in
 
 The files included in this bundle are meant to build upon each other culminating into a fully realized deployment configuration file.  The files are referenced below:
 
-- create_networkdomain
-- create_vlan
-- create_server
-- create_nat
-- create_vip
-- create_firewall_acl
-- create_infrastructure
+- networkdomain.tf
+- create_vlan.tf
+- server.tf
+- nat.tf
+- vip.tf
+- firewall_acl.tf
+- infrastructure.tf
 
 To get started using the files, you will require the following:
 
