@@ -8,6 +8,7 @@ The files included in this bundle are meant to build upon each other culminating
 - networkdomain.tf
 - vlan.tf
 - server.tf
+- server.tf
 - nat.tf
 - vip.tf
 - firewall_rules.tf
