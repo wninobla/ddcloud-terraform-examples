@@ -41,6 +41,15 @@ resource "ddcloud_vlan" "trust-vlan" {
   depends_on           = ["ddcloud_networkdomain.networkdomain"]
 }
 
+resource "ddcloud_vlan" "utility-vlan" {
+  name                 = "UTILITY"
+  description          = "This is an automated Terraform VLAN designated for UTILITY hosts"
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  ipv4_base_address    = "192.168.0.0"
+  ipv4_prefix_size     = 24
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
 resource "ddcloud_server" "webapp-server" {
   name                 = "WEBAPP SERVER"
   admin_password       = "password"
@@ -79,6 +88,20 @@ resource "ddcloud_server" "db-server" {
 
   auto_start = "FALSE"
   depends_on           = ["ddcloud_vlan.trust-vlan"]
+}
+
+resource "ddcloud_server_nic" "webapp-server" {
+  server               = "${ddcloud_server.webapp-server.id}"
+  private_ipv4         = "192.168.0.11"
+  vlan                 = "${ddcloud_vlan.utility-vlan.id}"
+  depends_on           = ["ddcloud_server.webapp-server"]
+}
+
+resource "ddcloud_server_nic" "db-server" {
+  server               = "${ddcloud_server.db-server.id}"
+  private_ipv4         = "192.168.0.12"
+  vlan                 = "${ddcloud_vlan.utility-vlan.id}"
+  depends_on           = ["ddcloud_server.db-server"]
 }
 
 resource "ddcloud_nat" "nat" {
@@ -124,6 +147,108 @@ resource "ddcloud_virtual_listener" "virtual-listener" {
   depends_on              = ["ddcloud_vip_pool.vip-pool"]
 }
 
+resource "ddcloud_port_list" "http-list" {
+  name                 = "HTTP_Port_List"
+  description          = "Port for non-encrypted HTTP traffic"
+
+  port {
+    begin              = 80
+  }
+  
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
+resource "ddcloud_port_list" "http-alt-list" {
+  name                 = "HTTP_Alternate_Port_List"
+  description          = "Port for non-encrypted HTTP traffic internally for Apache Tomcat"
+
+  port {
+    begin              = 8080
+  }
+  
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
+resource "ddcloud_port_list" "https-list" {
+  name                 = "HTTPS_Port_List"
+  description          = "Port for encrypted HTTP traffic"
+
+  port {
+    begin              = 443
+  }
+  
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
+resource "ddcloud_port_list" "web-services-list" {
+  name                 = "WEB_Services_List"
+  description          = "Port group for all HTTP/HTTPS traffic"
+  
+  child_lists          = [
+    "${ddcloud_port_list.http-list.id}",
+    "${ddcloud_port_list.http-alt-list.id}",
+	"${ddcloud_port_list.https-list.id}",
+  ]
+
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
+resource "ddcloud_address_list" "dmz-list" {
+  name                 = "DMZ_Address_List"
+  ip_version           = "IPv4"
+
+  address {
+    network            = "192.168.1.0"
+	prefix_size        = 24
+  }
+  
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
+resource "ddcloud_address_list" "trust-list" {
+  name                 = "TRUST_Address_List"
+  ip_version           = "IPv4"
+
+  address {
+    network            = "192.168.2.0"
+	prefix_size        = 24
+  }
+  
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
+resource "ddcloud_address_list" "utility-list" {
+  name                 = "UTILITY_Address_List"
+  ip_version           = "IPv4"
+
+  address {
+    network            = "192.168.0.0"
+	prefix_size        = 24
+  }
+  
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
+resource "ddcloud_address_list" "prod-list" {
+  name                 = "PROD_Address_List"
+  ip_version           = "IPv4"
+  
+  child_lists          = [
+    "${ddcloud_address_list.dmz-list.id}",
+    "${ddcloud_address_list.trust-list.id}",
+  ]
+
+  networkdomain        = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on           = ["ddcloud_networkdomain.networkdomain"]
+}
+
 resource "ddcloud_firewall_rule" "firewall-rule-001" {
   name                = "rdp.inbound"
   placement           = "first"
@@ -148,6 +273,33 @@ resource "ddcloud_firewall_rule" "firewall-rule-002" {
   destination_port    = "1433"
   networkdomain       = "${ddcloud_networkdomain.networkdomain.id}"
   depends_on          = ["ddcloud_virtual_listener.virtual-listener"]
+}
+
+resource "ddcloud_firewall_rule" "firewall-rule-003" {
+  name                     = "web.inbound"
+  placement                = "last"
+  action                   = "accept"
+  enabled                  = true
+  ip_version               = "ipv4"
+  protocol                 = "tcp"
+  destination_address      = "${ddcloud_nat.nat.public_ipv4}"
+  destination_port_list    = "${ddcloud_port_list.web-services-list.id}"
+  networkdomain            = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on               = ["ddcloud_virtual_listener.virtual-listener"]
+}
+
+resource "ddcloud_firewall_rule" "firewall-rule-004" {
+  name                     = "mgmt.inbound"
+  placement                = "last"
+  action                   = "accept"
+  enabled                  = true
+  ip_version               = "ipv4"
+  protocol                 = "tcp"
+#  source_address_list      = "${ddcloud_address_list.utility-list.id}" 
+  destination_address_list = "${ddcloud_address_list.prod-list.id}"
+  destination_port         = "3389" 
+  networkdomain            = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on               = ["ddcloud_virtual_listener.virtual-listener"]
 }
 
 resource "ddcloud_server_anti_affinity" "server_anti_affinity" {
