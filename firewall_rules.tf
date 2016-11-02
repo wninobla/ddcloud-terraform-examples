@@ -37,6 +37,33 @@ resource "ddcloud_firewall_rule" "firewall-rule-002" {
   depends_on          = ["ddcloud_virtual_listener.virtual-listener"]
 }
 
+resource "ddcloud_firewall_rule" "firewall-rule-003" {
+  name                     = "web.inbound"
+  placement                = "last"
+  action                   = "accept"
+  enabled                  = true
+  ip_version               = "ipv4"
+  protocol                 = "tcp"
+  destination_address      = "${ddcloud_nat.nat.public_ipv4}"
+  destination_port_list    = "${ddcloud_port_list.web-services-list.id}"
+  networkdomain            = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on               = ["ddcloud_virtual_listener.virtual-listener"]
+}
+
+resource "ddcloud_firewall_rule" "firewall-rule-004" {
+  name                     = "mgmt.inbound"
+  placement                = "last"
+  action                   = "accept"
+  enabled                  = true
+  ip_version               = "ipv4"
+  protocol                 = "tcp"
+#  source_address_list      = "${ddcloud_address_list.utility-list.id}" 
+  destination_address_list = "${ddcloud_address_list.prod-list.id}"
+  destination_port         = "3389" 
+  networkdomain            = "${ddcloud_networkdomain.networkdomain.id}"
+  depends_on               = ["ddcloud_virtual_listener.virtual-listener"]
+}
+
 #  "Resource" Section Notes:
 #  
 #  1.  Several fields comprise the creation of a firewall ACL rule.  Please refer to 
@@ -69,5 +96,16 @@ resource "ddcloud_firewall_rule" "firewall-rule-002" {
 #          placement:           "last"
 #          protocol:            "tcp"
 #          source_network:      "192.168.1.0/24"
+#      
+#      + ddcloud_firewall_rule.firewall-rule-003
+#          action:                "ACCEPT_DECISIVELY"
+#          destination_address:   "168.128.29.36"
+#          destination_port_list: "fac20a25-9ef1-42d0-a728-1ed959e59cf7"
+#          enabled:               "true"
+#          ip_version:            "ipv4"
+#          name:                  "web.inbound"
+#          networkdomain:         "9c4033c9-3c2c-4ea0-bf20-52929c74140c"
+#          placement:             "last"
+#          protocol:              "tcp"
 #      
 #  4.  For more information on resource usage, please go to the URL - https://goo.gl/BsGjrv

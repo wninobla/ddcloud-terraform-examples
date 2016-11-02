@@ -1,5 +1,5 @@
 /*
- * The section below build on the configuration files in create_networkdomain and includes resource
+ * The section below build on the configuration files in networkdomain.tf and includes resource
  * definitions to create VM's via Terraform.  The information below is meant to be added to the
  * existing file but is separated for learning purposes.
  * 
