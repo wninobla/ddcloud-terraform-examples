@@ -8,9 +8,11 @@ The files included in this bundle are meant to build upon each other culminating
 - networkdomain.tf
 - vlan.tf
 - server.tf
-- server.tf
+- server_nic.tf
 - nat.tf
 - vip.tf
+- address_list.tf
+- port_list.tf
 - firewall_rules.tf
 - server_anti_affinity.tf
 - infrastructure.tf
