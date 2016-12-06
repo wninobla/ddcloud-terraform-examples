@@ -12,7 +12,7 @@
 #  is dependent on assets to allow or deny network traffic to(or from).
 
 resource "ddcloud_firewall_rule" "firewall-rule-001" {
-  name                = "rdp.inbound"
+  name                = "ssh.inbound"
   placement           = "first"
   action              = "accept"
   enabled             = true
